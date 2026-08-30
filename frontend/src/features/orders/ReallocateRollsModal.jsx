@@ -18,6 +18,10 @@ export default function ReallocateRollsModal({ order, item, onClose, onDone }) {
       warehouse_name: a.warehouse_name, current: true,
     }))), [order, item]);
 
+  const legacyAllocQty = useMemo(() => currentRolls.length > 0 ? 0 : (order.allocations || [])
+    .filter((a) => a.product_id === item.product_id && !(a.rolls || []).length)
+    .reduce((s, a) => s + Number(a.quantity || 0), 0), [order, item, currentRolls]);
+
   const [avail, setAvail] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -128,6 +132,12 @@ export default function ReallocateRollsModal({ order, item, onClose, onDone }) {
         </div>
 
         <div className="max-h-[52vh] overflow-y-auto">
+          {legacyAllocQty > 0 && (
+            <p data-testid="so-realloc-no-roll-detail" className="flex items-start gap-1.5 bg-[#FFF7EF] px-3 py-2 text-[10.5px] text-[#8C4A00]">
+              <AlertTriangle size={12} className="mt-0.5 shrink-0" />
+              Baris ini tercatat teralokasi <b className="tabular-nums">{formatQty(legacyAllocQty)}</b> tanpa rincian roll (alokasi lama). Memilih roll di bawah lalu menyimpan akan menggantikannya dengan alokasi roll yang jelas.
+            </p>
+          )}
           {currentRolls.length > 0 && (
             <>
               <p className="bg-[#FAFBFC] px-3 py-1.5 text-[10px] font-bold uppercase text-[#6B6B73]">Roll saat ini (hilangkan centang untuk melepas)</p>

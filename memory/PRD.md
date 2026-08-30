@@ -1099,3 +1099,30 @@ Browser end-to-end: chip Terlambat 12→1 PO (PO-00004) → toggle off kembali 1
 kiosk terbuka LIVE, simulasi roll AVAILABLE keluar → verdict "MERAH — TAHAN"
 + animasi knKioskBlink terukur via getComputedStyle; tutup via X & Esc OK.
 curl late=1 → total 1 (PO-00004). Residu simulasi dipulihkan via seed.
+
+## 2026-08-30 — Lanjutan repo kzkkssjdvdg/KN: verifikasi roll_pick_sales + Ganti Roll
+Repo di-clone ulang ke /app, environment dipulihkan penuh via .restore_env.sh
+(deps + MongoDB + seed_realistic + seed_e9_chain_demo + build FE — semua hijau).
+WIP commit sesi lalu (3a188d8) berisi 2 fitur yang titik hentinya di tahap uji:
+1. **Config `allocation.roll_pick_sales`** (grup stok-satuan, default TRUE) —
+   bila FALSE role sales tidak boleh pilih roll saat checkout (UI toggle 'Beli
+   per Roll' disembunyikan + pagar server 400 di POST /api/sales-orders);
+   admin/sales_admin/manager tetap boleh. Mode qty tetap auto-reserve FEFO.
+2. **Ganti Roll (alokasi manual)** — POST /api/sales-orders/{id}/items/{pid}/reallocate
+   (izin inventory.pegging, body {roll_lines:[{roll_id,take_qty}]}); roll lama
+   dilepas/dipertahankan, roll baru di-reserve (cut/split), allocations/
+   reserved_qty/backorder/status di-update; tombol per baris di OrderDetailPanel
+   → ReallocateRollsModal.
+### Verifikasi (iteration_270 — environment fresh)
+Backend 12/12 pass (suite lama 8 + suite baru test_iter270_reallocate_extra.py:
+keep-old-roll tanpa dobel, parsial→backorder, 409 confirmed, 400 entitas lain).
+Frontend 5/5 flows (toggle hilang utk sales saat FALSE + positive control,
+Ganti Roll bekerja utk salesadmin di SO reserved, tersembunyi utk sales).
+Cleanup: config direset ke default TRUE.
+### Perbaikan minor pasca-uji
+ReallocateRollsModal: hint `so-realloc-no-roll-detail` bila alokasi lama tidak
+punya rincian rolls[] (SO hasil seed) — menjelaskan bahwa menyimpan akan
+menggantikannya dengan alokasi roll yang jelas. Diverifikasi via browser di SO-0006.
+### Backlog (dari testing agent, opsional)
+- seed_realistic: reserve roll nyata utk SO demo reserved (so_006/so_007)
+- GET /api/inventory/rolls/{id} endpoint detail (sekarang 404, hanya ada list)
