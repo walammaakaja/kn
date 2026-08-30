@@ -9,6 +9,7 @@ import ProductMasterForm from "./products/ProductMasterForm";
 import LineFilter from "../../components/LineFilter";   // FASE L — chip penyaring lini
 import ProductLifecycleCell from "../rnd/ProductLifecycleCell";
 import axios, { API } from "../../services/apiClient";
+import { formatCurrency } from "../../utils/formatters";
 import { useEntityScope } from "../../context/EntityScopeContext";
 import { scopeSuffix } from "../../utils/entityLabel";
 // INV-ROLE-01 — wewenang layar dibaca dari IZIN pengguna, bukan nama peran.
@@ -236,14 +237,12 @@ export default function AdminView({
       {tab === "categories" && <CategoryManager onChanged={loadCategories} />}
       {tab === "integrations" && <IntegrationsPanel />}
       {tab !== "categories" && tab !== "integrations" && (
-      <section className="grid gap-3 lg:grid-cols-[360px_1fr]">
-        {/* FASE P4 — form master data menjadi POP-UP. Dua perbaikan sekaligus:
-            (1) tombolnya SELALU terlihat (dulu ia menghilang begitu form terbuka, jadi
-            pengguna tak punya penanda apa pun bahwa "form"-nya adalah kolom di sebelah),
-            (2) daftar Records tidak lagi terhimpit kolom 360px saat mengisi. */}
+      <section className="flex flex-col gap-3">
+        {/* FASE P4 — form master data menjadi POP-UP. Tombolnya kini di ATAS daftar
+            (dulu menempati kolom kiri 360px yang tampak sebagai panel kosong besar). */}
         <button
           data-testid="toggle-admin-create-form-button"
-          className="secondary-button"
+          className="secondary-button self-start"
           onClick={() => setShowCreateForm(true)}
         >
           <Plus size={14} /> Tampilkan Formulir Buat
@@ -251,7 +250,7 @@ export default function AdminView({
         <FormModal
           open={showCreateForm}
           onClose={() => setShowCreateForm(false)}
-          title="Buat Data Master"
+          title={editingProductId && tab === "products" ? "Ubah Data Master" : "Buat Data Master"}
           subtitle="Isian untuk tab yang sedang dibuka — termasuk impor/ekspor CSV"
           icon={Plus}
           size="md"
@@ -358,7 +357,19 @@ export default function AdminView({
               <div data-testid={`admin-records-empty-${tab}`} className="px-3 py-8 text-center text-[12px] text-[#6B6B73]">Belum ada data {tab} {scopeSuffix(scopeEntities, scopeEntityId)}.</div>
             )}
             {visibleRecords.map((row) => (
-              <div data-testid={`admin-record-${tab}-${row.id}`} key={row.id} role="button" tabIndex={0} className="rounded-md border border-[#EFF0F2] bg-[#FAFBFC] interactive-card flex flex-col gap-2 p-2.5 md:flex-row md:items-center md:justify-between" onClick={() => onShowDetail({ title: row.name || row.legal_name || row.code || row.email, body: `Record ${tab} ini dapat diupdate, dinonaktifkan, atau diexport dari Admin CRUD.`, facts: [{ label: "Module", value: tab }, { label: "Status", value: row.status || (row.active === false ? "inactive" : "active") }], target: "admin", cta: "Tetap di Admin" })}>
+              <div data-testid={`admin-record-${tab}-${row.id}`} key={row.id} role="button" tabIndex={0} className="rounded-md border border-[#EFF0F2] bg-[#FAFBFC] interactive-card flex flex-col gap-2 p-2.5 md:flex-row md:items-center md:justify-between" onClick={() => onShowDetail(tab === "products"
+                ? {
+                    title: row.name,
+                    body: `${row.sku || "SKU —"}${row.category ? ` · ${row.category}` : ""}${row.variant ? ` · ${row.variant}` : ""}${row.description ? ` — ${row.description}` : ""}`,
+                    facts: [
+                      { label: "Harga Jual", value: Number(row.price) > 0 ? `${formatCurrency(row.price)} / ${row.base_unit || "unit"}` : "Belum diisi" },
+                      { label: "HPP (Harga Pokok)", value: Number(row.harga_pokok) > 0 ? formatCurrency(row.harga_pokok) : "Belum diisi" },
+                      { label: "Lini · Grade", value: `${row.line_code ? `Lini ${row.line_code}` : "Lini belum diisi"} · Grade ${row.grade || "—"}` },
+                      { label: "Spesifikasi", value: [row.fabric_type, Number(row.gramasi) > 0 ? `${row.gramasi} gsm` : null, Number(row.lebar) > 0 ? `lebar ${row.lebar}` : null].filter(Boolean).join(" · ") || "—" },
+                      { label: "Status", value: `${row.status || (row.active === false ? "inactive" : "active")} · tahap ${row.stage || "finished"}` },
+                    ],
+                  }
+                : { title: row.name || row.legal_name || row.code || row.email, body: `Record ${tab} — gunakan tombol di baris ini untuk mengubah atau menonaktifkan.`, facts: [{ label: "Module", value: tab }, { label: "Status", value: row.status || (row.active === false ? "inactive" : "active") }] })}>
                 <div className="min-w-0">
                   <p data-testid={`admin-record-title-${row.id}`} className="text-[12.5px] font-semibold truncate">{row.name || row.legal_name || row.code || row.email}</p>
                   <p data-testid={`admin-record-meta-${row.id}`} className="text-[11px] text-[#3C3C43] truncate">{row.sku || row.code || row.document_type || row.role || row.short_name || row.city} • {row.status || (row.active === false ? "inactive" : "active")}</p>

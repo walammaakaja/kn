@@ -1126,3 +1126,24 @@ menggantikannya dengan alokasi roll yang jelas. Diverifikasi via browser di SO-0
 ### Backlog (dari testing agent, opsional)
 - seed_realistic: reserve roll nyata utk SO demo reserved (so_006/so_007)
 - GET /api/inventory/rolls/{id} endpoint detail (sekarang 404, hanya ada list)
+
+## 2026-08-30 — Perbaikan 3 bug UI (laporan user · iteration_271)
+1. **Panel 'Detail & Aksi' + tabel Pesanan**: kolom kanan OrdersView memakai
+   `content-start` (dulu align-content stretch → gap vertikal besar), tombol
+   sakelar pane jadi pill biru, grid kolom daftar pakai minmax + overflow-x
+   (min-w-720px) — header & baris kini identik dan rata.
+2. **Kelas CSS hantu gelombang 2** (components.css): `.data-table` styling dasar,
+   `.table-wrap`, `.table-container`, `.view-container`, `.empty-state`,
+   `.loading-state`, `.text-muted`, `.feature-badge/.badge-green` kini
+   didefinisikan → tabel Retur & Barang Sisa + Pesanan Khusus (OD) rapi.
+   Backend flow retur/OD tidak berubah (diverifikasi sehat).
+3. **Popup Produk (Master)**: klik baris produk kini menampilkan fakta penting
+   (Harga Jual/satuan, HPP, Lini·Grade, Spesifikasi, Status·tahap) TANPA tombol
+   navigasi yang dulu redirect ke Pengaturan; kolom kiri kosong 360px dihapus
+   (tombol formulir pindah ke atas Records).
+Kosmetik ikutan: judul modal "Ubah Data Master" saat edit produk; sel Harga/
+Nilai di detail retur whitespace-nowrap (+ aturan umum td.tabular-nums nowrap).
+### Verifikasi
+Testing agent iteration_271: 3/3 bug FIXED, regresi layar lain aman, 0 console
+error, backend smoke 2/2. CATATAN dev: template kolom grid daftar SO ada di 2
+tempat (header line ~263 & baris ~288) — ubah keduanya bersamaan.

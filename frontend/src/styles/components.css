@@ -699,3 +699,62 @@
 }
 .link-button:hover:not(:disabled) { background: rgba(0, 122, 255, 0.08); }
 .link-button:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   KELAS HANTU GELOMBANG 2 (ditemukan 2026-08 — laporan pengguna: tabel Retur &
+   Pesanan Khusus "berantakan"). Kelas di bawah dipakai belasan layar
+   (SalesReturns, SpecialOrders, ReturnDetail, ContraBon, Config, dst.) tetapi
+   TIDAK pernah didefinisikan: `data-table` hanya punya aturan td.money/td.qty,
+   sehingga tabel tampil telanjang tanpa padding/garis/header.
+   ══════════════════════════════════════════════════════════════════════════ */
+.view-container { display: flex; flex-direction: column; gap: 12px; }
+
+.table-wrap, .table-container {
+  width: 100%;
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+}
+.data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; color: #1F1F25; }
+.data-table thead th {
+  position: sticky; top: 0; z-index: 1;
+  background: #FAFBFC;
+  text-align: left;
+  padding: 9px 12px;
+  font-size: 10.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.data-table tbody td { padding: 9px 12px; border-bottom: 1px solid #F2F3F5; vertical-align: middle; }
+.data-table td.tabular-nums, .data-table td.font-mono { white-space: nowrap; }
+.data-table tbody tr:last-child td { border-bottom: 0; }
+.data-table tbody tr:hover { background: #FAFBFC; }
+.data-table td.text-right, .data-table th.text-right { text-align: right; }
+
+.text-muted { color: #8E8E93; }
+
+.empty-state, .loading-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px;
+  padding: 40px 16px;
+  text-align: center;
+  color: #6B6B73;
+  font-size: 13px;
+  background: #fff;
+  border: 1px dashed var(--line);
+  border-radius: var(--r-lg);
+}
+
+.feature-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+  background: #F2F2F7; color: #3C3C43;
+  white-space: nowrap;
+}
+.feature-badge.badge-green { background: #E6F6EC; color: #126E2C; }

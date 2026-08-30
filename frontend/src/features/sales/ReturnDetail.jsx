@@ -249,10 +249,10 @@ export default function ReturnDetail({
                     </span>
                   </td>
                   <td className="text-muted text-sm">{item.reason || "-"}</td>
-                  <td className="text-right tabular-nums">
+                  <td className="text-right tabular-nums whitespace-nowrap">
                     {item.unit_price_est != null ? `Rp ${fmtNum(item.unit_price_est, 0)}` : "—"}
                   </td>
-                  <td className="text-right tabular-nums font-semibold">
+                  <td className="text-right tabular-nums font-semibold whitespace-nowrap">
                     {item.line_total_est != null ? `Rp ${fmtNum(item.line_total_est, 0)}` : "—"}
                   </td>
                 </tr>

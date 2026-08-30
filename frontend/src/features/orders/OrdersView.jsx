@@ -259,11 +259,11 @@ export default function OrdersView({
                   ]}
                 />
               </div>
-              <div className="overflow-hidden">
-                <div className="grid grid-cols-[1fr_110px_95px_90px_66px_120px] gap-2 bg-[#FAFBFC] px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-[#6B6B73] border-b border-[#EFF0F2]">
+              <div className="overflow-x-auto">
+                <div className="min-w-[720px] grid grid-cols-[minmax(150px,1.4fr)_minmax(100px,1fr)_86px_100px_56px_minmax(120px,1fr)] gap-2 bg-[#FAFBFC] px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-[#6B6B73] border-b border-[#EFF0F2]">
                   <span>Pesanan</span><span>Pelanggan</span><span>Qty Pesan</span><span className="text-right">Total</span><span>Tanggal</span><span>Tahap</span>
                 </div>
-                <div className="divide-y divide-[#EFF0F2] max-h-[600px] overflow-y-auto">
+                <div className="min-w-[720px] divide-y divide-[#EFF0F2] max-h-[600px] overflow-y-auto">
                   {(loading || paged.loading) && (
                     <div className="px-3 py-8 text-center text-[12px] text-[#6B6B73] animate-pulse">Memuat pesanan…</div>
                   )}
@@ -285,7 +285,7 @@ export default function OrdersView({
                     <div 
                       data-testid={`order-card-${order.id}`} 
                       key={order.id}
-                      className={`grid grid-cols-[1fr_110px_95px_90px_66px_120px] gap-2 items-center px-3 py-2.5 cursor-pointer hover:bg-[#FAFBFC] transition-colors ${
+                      className={`grid grid-cols-[minmax(150px,1.4fr)_minmax(100px,1fr)_86px_100px_56px_minmax(120px,1fr)] gap-2 items-center px-3 py-2.5 cursor-pointer hover:bg-[#FAFBFC] transition-colors ${
                         selectedOrder === order.id ? 'bg-[#EFF4FF] border-l-2 border-[#007AFF]' : ''
                       }`}
                       onClick={() => setSelectedOrder(order.id === selectedOrder ? null : order.id)}
@@ -348,16 +348,22 @@ export default function OrdersView({
             </section>
 
             {sel ? (
-              <div className="grid gap-2">
+              <div className="grid gap-2 content-start">
                 <div className="flex gap-1.5" data-testid="order-pane-switch">
                   <button type="button" data-testid="order-pane-detail"
                     onClick={() => setDetailPane("detail")}
-                    className={`tab-button ${detailPane === "detail" ? "active" : ""}`}>
+                    className={`flex-1 rounded-lg px-3 py-1.5 text-[11.5px] font-semibold transition-colors ${
+                      detailPane === "detail"
+                        ? "bg-[#007AFF] text-white"
+                        : "bg-white border border-[#E5E5EA] text-[#3C3C43] hover:bg-[#F2F2F7]"}`}>
                     <FileText size={12} className="mr-1 inline" /> Detail &amp; Aksi
                   </button>
                   <button type="button" data-testid="order-pane-journey"
                     onClick={() => setDetailPane("journey")}
-                    className={`tab-button ${detailPane === "journey" ? "active" : ""}`}>
+                    className={`flex-1 rounded-lg px-3 py-1.5 text-[11.5px] font-semibold transition-colors ${
+                      detailPane === "journey"
+                        ? "bg-[#007AFF] text-white"
+                        : "bg-white border border-[#E5E5EA] text-[#3C3C43] hover:bg-[#F2F2F7]"}`}>
                     <Route size={12} className="mr-1 inline" /> Perjalanan Pesanan
                   </button>
                 </div>
